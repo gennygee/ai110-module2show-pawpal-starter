@@ -66,11 +66,15 @@ class Pet:
 
 
 class Owner:
+    name: str
+    time_available: int
+    pets: List[Pet]
+
     def __init__(self, name: str, time_available: int):
         """Initializes a new owner with a name and daily available time constraint."""
         self.name = name
         self.time_available = time_available  # total daily minutes available
-        self.pets: List[Pet] = []
+        self.pets = []
 
     def add_pet(self, pet: Pet) -> None:
         """Registers a new pet under this owner."""
@@ -101,11 +105,16 @@ class Owner:
 
 
 class Scheduler:
+    owner: Owner
+    daily_plan: List[Task]
+    explanation: List[str]
+    warnings: List[str]
+
     def __init__(self, owner: Owner):
         self.owner = owner
-        self.daily_plan: List[Task] = []
-        self.explanation: List[str] = []
-        self.warnings: List[str] = []
+        self.daily_plan = []
+        self.explanation = []
+        self.warnings = []
 
     def sort_by_time(self, tasks: List[Task]) -> List[Task]:
         """
