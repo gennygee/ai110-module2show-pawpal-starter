@@ -1,33 +1,30 @@
 from pawpal_system import Owner, Pet, Task, Scheduler
 
 def main():
-    # 1. Create an Owner
-    owner = Owner(name="Genny", time_available=90)  # 1.5 hours available
+    owner = Owner(name="Genny", time_available=120)
 
-    # 2. Create at least two Pets
     dog = Pet(name="Buddy", species="Dog")
     cat = Pet(name="Luna", species="Cat")
     owner.add_pet(dog)
     owner.add_pet(cat)
 
-    # 3. Add at least three Tasks with different times
-    walk_task = Task(description="Morning Walk", time=45, frequency="daily", priority="high")
-    feed_dog_task = Task(description="Feed Buddy", time=10, frequency="daily", priority="high")
-    play_cat_task = Task(description="Laser Pointer Play", time=20, frequency="daily", priority="medium")
-    brush_cat_task = Task(description="Brushing", time=30, frequency="weekly", priority="low")
+    # Added conflicting tasks at 18:00
+    t1 = Task(description="Evening Feed", time=10, frequency="daily", priority="high", target_time="18:00")
+    t2 = Task(description="Evening Walk", time=45, frequency="daily", priority="high", target_time="18:00") # INTENTIONAL CONFLICT
+    t3 = Task(description="Mid-day Grooming", time=30, frequency="weekly", priority="medium", target_time="13:00")
+    t4 = Task(description="Late Night Play", time=20, frequency="daily", priority="low", target_time="21:00")
     
-    dog.add_task(walk_task)
-    dog.add_task(feed_dog_task)
-    cat.add_task(play_cat_task)
-    cat.add_task(brush_cat_task)
+    dog.add_task(t1)
+    dog.add_task(t2)
+    cat.add_task(t3)
+    cat.add_task(t4)
     
-    # 4. Initialize Scheduler and generate plan
+    # Generate schedule (Tests the new Conflict Detection logic natively building explanation warnings!)
     scheduler = Scheduler(owner=owner)
     scheduler.generate_plan()
     
-    # 5. Print out the formatted schedule to the terminal
     print("=" * 40)
-    print(" 🐾 Today's PawPal+ Schedule 🐾")
+    print(" 🐾 Today's PawPal+ Schedule (With Warnings!) 🐾")
     print("=" * 40)
     print(f"Owner: {owner.name} | Total Available Time: {owner.time_available} mins")
     print("-" * 40)

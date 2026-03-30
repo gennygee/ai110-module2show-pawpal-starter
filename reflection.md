@@ -47,8 +47,9 @@ The system revolves around four main objects to manage a user's pet care schedul
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+Our scheduler mathematically checks for colliding task durations, but it intentionally makes the tradeoff to **soft-warn** the user about overlapping tasks rather than aggressively crashing the application or forcibly shifting the tasks to new timeslots itself. 
+
+This tradeoff is entirely reasonable for this scenario because pet owners often natively multitask (e.g., taking the dog for a walk while technically simultaneously supervising the cat's "Play Time"). A complex conflict-resolving algorithm might over-engineer the process and artificially block the user. A lightweight warning gives the owner full control while keeping them safely informed!
 
 ---
 

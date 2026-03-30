@@ -41,3 +41,12 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## Smarter Scheduling (New Features)
+
+The latest PawPal+ update completely transforms the basic backend structure into a robust, mathematical logic-driven scheduler!
+
+- **Sorting**: Pending tasks are now seamlessly natively sorted chronologically via lambda string keys based on their exact `target_time` (`HH:MM`).
+- **Filtering**: Powerful state queries seamlessly filter and fetch exact individual tasks natively through `Owner.get_pending_tasks()` and `Owner.get_tasks_for_pet(pet_name)`.
+- **Conflict Detection**: The master scheduler reliably calculates intersecting duration intervals using strict mathematics (`start_A < end_B AND start_B < end_A`) to dynamically insert friendly "overlap warnings" into the reasoning engine rather than halting or rejecting generation constraints.
+- **Recurring Task Rollovers**: Completed recurring `daily` and `weekly` tasks generate dynamic cloned successors mapped perfectly to futuristic due dates via Python's reliable `datetime.timedelta` logic.
