@@ -68,3 +68,7 @@ Our tests strictly cover:
 
 **Confidence Level**: ⭐⭐⭐⭐⭐ (5/5 Stars!)
 The algorithmic test suite repeatedly passes with **100% green coverage** on the first run. Every core feature has been mathematically and behaviorally verified!
+
+## 📸 Demo
+
+<a href="/course_images/ai110/pawpal_ui_screenshot.png" target="_blank"><img src='/course_images/ai110/pawpal_ui_screenshot.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
