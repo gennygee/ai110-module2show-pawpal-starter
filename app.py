@@ -6,9 +6,13 @@ st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
 
 st.title("🐾 Smart PawPal+ Scheduler")
 
-# --- 1. INITIALIZE SESSION STATE ---
+# --- 1. INITIALIZE SESSION STATE & PERSISTENT DATA ---
 if "owner" not in st.session_state:
-    st.session_state.owner = Owner(name="Jordan", time_available=120)
+    loaded_owner = Owner.load_from_json("data.json")
+    if loaded_owner:
+        st.session_state.owner = loaded_owner
+    else:
+        st.session_state.owner = Owner(name="Jordan", time_available=120)
 
 st.subheader("Owner Details")
 col_o1, col_o2 = st.columns(2)
@@ -17,10 +21,15 @@ with col_o1:
 with col_o2:
     new_time = st.number_input("Time Available (minutes)", min_value=10, max_value=720, value=st.session_state.owner.time_available)
 
+updated = False
 if new_owner_name != st.session_state.owner.name:
     st.session_state.owner.name = new_owner_name
+    updated = True
 if new_time != st.session_state.owner.time_available:
     st.session_state.owner.update_time_available(new_time)
+    updated = True
+if updated:
+    st.session_state.owner.save_to_json("data.json")
 
 st.divider()
 
@@ -37,6 +46,7 @@ with pet_col3:
     if st.button("Add Pet", use_container_width=True):
         new_pet = Pet(name=pet_name, species=species)
         st.session_state.owner.add_pet(new_pet)
+        st.session_state.owner.save_to_json("data.json")
         st.success(f"Added pet: {pet_name}!")
 
 if st.session_state.owner.pets:
@@ -70,6 +80,7 @@ else:
             time_str = target_input.strftime("%H:%M")
             new_task = Task(description=task_desc, time=int(duration), priority=priority, frequency=frequency, target_time=time_str)
             target_pet.add_task(new_task)
+            st.session_state.owner.save_to_json("data.json")
             st.success(f"Added task '{task_desc}' for {target_pet.name} at {time_str}!")
         
     all_tasks = st.session_state.owner.get_all_pet_tasks()

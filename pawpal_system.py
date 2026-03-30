@@ -103,6 +103,67 @@ class Owner:
         """Updates the owner's daily available time constraint."""
         self.time_available = minutes
 
+    def to_dict(self) -> dict:
+        """Serializes the Owner and all nested Pets and Tasks to a safe JSON-ready dictionary."""
+        return {
+            "name": self.name,
+            "time_available": self.time_available,
+            "pets": [
+                {
+                    "name": pet.name,
+                    "species": pet.species,
+                    "tasks": [
+                        {
+                            "description": t.description,
+                            "time": t.time,
+                            "frequency": t.frequency,
+                            "completion_status": t.completion_status,
+                            "priority": t.priority,
+                            "target_time": t.target_time,
+                            "due_date": t.due_date.isoformat()
+                        } for t in pet.tasks
+                    ]
+                } for pet in self.pets
+            ]
+        }
+
+    def save_to_json(self, filename: str = "data.json") -> None:
+        """Writes the serialized Owner state to a persistent local JSON file."""
+        import json
+        with open(filename, "w") as f:
+            json.dump(self.to_dict(), f, indent=4)
+
+    @classmethod
+    def load_from_json(cls, filename: str = "data.json") -> Optional['Owner']:
+        """Reconstructs the entire nested object graph from a saved JSON state."""
+        import os
+        import json
+        from datetime import date
+        
+        if not os.path.exists(filename):
+            return None
+            
+        with open(filename, "r") as f:
+            data = json.load(f)
+            
+        owner = cls(name=data["name"], time_available=data["time_available"])
+        for p_data in data["pets"]:
+            pet = Pet(name=p_data["name"], species=p_data["species"])
+            for t_data in p_data["tasks"]:
+                task = Task(
+                    description=t_data["description"],
+                    time=t_data["time"],
+                    frequency=t_data["frequency"],
+                    completion_status=t_data["completion_status"],
+                    priority=t_data["priority"],
+                    target_time=t_data["target_time"]
+                )
+                if "due_date" in t_data:
+                    task.due_date = date.fromisoformat(t_data["due_date"])
+                pet.add_task(task)
+            owner.add_pet(pet)
+        return owner
+
 
 class Scheduler:
     owner: Owner
