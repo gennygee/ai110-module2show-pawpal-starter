@@ -130,7 +130,7 @@ class Scheduler:
         self.daily_plan = []
         self.explanation = []
         self.warnings = []
-        time_left = self.owner.time_available
+        time_left: int = int(self.owner.time_available)
 
         def time_to_mins(t_str: str) -> int:
             h, m = t_str.split(':')
