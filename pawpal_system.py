@@ -157,7 +157,8 @@ class Scheduler:
         for i, task in enumerate(self.daily_plan):
             task_start = time_to_mins(task.target_time)
             task_end = task_start + task.time
-            for scheduled_task in self.daily_plan[i+1:]:
+            for j in range(i + 1, len(self.daily_plan)):
+                scheduled_task = self.daily_plan[j]
                 sched_start = time_to_mins(scheduled_task.target_time)
                 sched_end = sched_start + scheduled_task.time
                 
