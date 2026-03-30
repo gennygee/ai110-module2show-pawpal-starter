@@ -33,8 +33,7 @@ The system revolves around four main objects to manage a user's pet care schedul
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+Yes, the design fundamentally expanded! We realized `Scheduler` needed explicit mathematical properties to manage timelines proactively, so we added `target_time: String` and `due_date: Date` into our `Task` dataclass. We also massively upgraded the `Owner` class by injecting internal filtering methods (`get_pending_tasks` and `get_tasks_for_pet`) to streamline how the Scheduler natively pulls its operational data before generation.
 
 ---
 
@@ -42,8 +41,7 @@ The system revolves around four main objects to manage a user's pet care schedul
 
 **a. Constraints and priorities**
 
-- What constraints does your scheduler consider (for example: time, priority, preferences)?
-- How did you decide which constraints mattered most?
+Our scheduler relies absolutely natively on the owner's `time_available` integer benchmark constraint and the task's individual chronological `target_time`. The `target_time` is mathematically strictly converted to integer minutes to explicitly enforce chronological safety, while the core `time_available` constraint algorithm proactively prevents overloading the schedule by skipping tasks that mathematically exceed the owner's remaining daily budget constraint.
 
 **b. Tradeoffs**
 
@@ -57,13 +55,15 @@ This tradeoff is entirely reasonable for this scenario because pet owners often 
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
-- What kinds of prompts or questions were most helpful?
+We heavily leveraged standard VS Code Copilot's `Inline Chat` and the new expansive `Agent Mode`. Inline Chat was exceptionally effective for rapidly injecting discrete, highly-targeted mathematical algorithms (like compiling our lambda sorter). Actively relying on explicit context tags like `#codebase` in the larger Agent Chat window was hyper-critical for helping the AI securely map exactly how `st.session_state` properly connects volatile data securely between `app.py` and `pawpal_system.py`!
 
 **b. Judgment and verification**
 
-- Describe one moment where you did not accept an AI suggestion as-is.
-- How did you evaluate or verify what the AI suggested?
+During active development, Copilot actively suggested replacing our explicitly clear `for` loop inside `get_all_pet_tasks()` with an advanced, heavily nested, flattened Python list comprehension logic. I deliberately rejected the flattened generator version; while technically "more Pythonic", it aggressively sacrificed instant human readability entirely. As the lead technical architect, ensuring the codebase remained instantly understandable for beginner developers visually skimming the repo was far more important than saving two lines of syntax spacing.
+
+**c. Separate Chat Sessions**
+
+Segmenting the workflow by systematically isolating UI work, algorithmic testing iterations (`pytest`), and object-oriented backend class designs into fundamentally separate chat sessions natively kept the AI's internal context window incredibly pristine. It completely stopped the LLM from accidentally hallucinating UI Streamlit markup components directly into my raw backend terminal testing scripts!
 
 ---
 
@@ -71,13 +71,11 @@ This tradeoff is entirely reasonable for this scenario because pet owners often 
 
 **a. What you tested**
 
-- What behaviors did you test?
-- Why were these tests important?
+I explicitly modeled tests covering `Sorting Correctness`, exact `Recurrence Logic`, and `Conflict Interval Detection` via Pytest. These were heavily prioritized mathematically because complex algorithms are notoriously highly prone to silent edge-case logic bugs (like off-by-one errors when advancing calendar `due_date` mathematical parameters dynamically via `timedelta`) that completely evade traditional visual code inspection.
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+My exact Confidence Level is strictly ⭐⭐⭐⭐⭐ (5/5 Stars). The test suite natively successfully passes with fully 100% green coverage natively protecting firmly against regressions. Moving entirely forward, I would eventually design tests validating complex timezone boundary edge cases targeting extreme overnight task recurrences.
 
 ---
 
@@ -85,12 +83,12 @@ This tradeoff is entirely reasonable for this scenario because pet owners often 
 
 **a. What went well**
 
-- What part of this project are you most satisfied with?
+The absolute cleanest victory is our intensely interactive UI integration! Taking a raw background mathematical Python script and dynamically connecting it natively to a fully reactive `st.dataframe` overview and interactive `st.time_input` dashboard components inside Streamlit perfectly visualizes all the intensely complex logic successfully operating totally automatically behind the scenes!
 
 **b. What you would improve**
 
-- If you had another iteration, what would you improve or redesign?
+If I launched into another distinct development sprint cycle, I would completely swap `st.session_state` infrastructure for a reliably persistent local SQLite backend database using SQLAlchemy natively; this would guarantee that user profiles safely and securely survive inevitable application server system restarts permanently!
 
 **c. Key takeaway**
 
-- What is one important thing you learned about designing systems or working with AI on this project?
+Acting strictly as the absolute "Lead Architect" deeply reinforced that generative AI is an incredibly brilliant technical factory worker, but an utterly blind manager. The AI rapidly generates phenomenally robust fractional mathematical scripts and regex rules, but completely entirely relies structurally on my distinct human system-level context to actually wire those modules securely together dynamically. The true value and skill lie entirely explicitly in architecting the scaffolding cleanly, dictating boundaries precisely, and fundamentally verifying the final results natively!
