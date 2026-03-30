@@ -51,6 +51,12 @@ The latest PawPal+ update completely transforms the basic backend structure into
 - **Conflict Detection**: The master scheduler reliably calculates intersecting duration intervals using strict mathematics (`start_A < end_B AND start_B < end_A`) to dynamically insert friendly "overlap warnings" into the reasoning engine rather than halting or rejecting generation constraints.
 - **Recurring Task Rollovers**: Completed recurring `daily` and `weekly` tasks generate dynamic cloned successors mapped perfectly to futuristic due dates via Python's reliable `datetime.timedelta` logic.
 
+### 🌟 Advanced Algorithmic Capability: Weighted Prioritization (Agent Mode Integration)
+
+To definitively go entirely beyond basic chronological sorting, we utilized **Agent Mode** natively to mathematically implement a powerful **Weighted Prioritization Selection Algorithm**. 
+
+By explicitly mapping integer numerical weights natively to string values (`"high": 3, "medium": 2, "low": 1`), Agent Mode dynamically restructured completely the internal `Scheduler.generate_plan()`. The newly advanced logic explicitly filters and sorts tasks strictly by maximum priority weight descending so critical tasks are absolutely *always* assigned strict daily time budgets first regardless of chronologic time constraints, before gracefully resorting that successfully accepted subset securely back into chronological presentation order! Agent Mode was exceptionally phenomenally effective for rapidly structuring, integrating, and debugging this deeply complex mathematical two-pass lambda sorting logic almost entirely seamlessly.
+
 ## Testing PawPal+
 
 To ensure maximum reliability of our advanced algorithms, PawPal+ features a dedicated automated testing suite utilizing `pytest`. 

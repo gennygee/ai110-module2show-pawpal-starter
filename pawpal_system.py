@@ -123,9 +123,13 @@ class Scheduler:
         return sorted(tasks, key=lambda t: t.target_time)
 
     def generate_plan(self) -> None:
-        """Retrieves and schedules pending tasks based on target_time and available time, while checking for conflicts."""
+        """Retrieves and schedules pending tasks based on priority weights, target_time, and available time, while reliably checking for conflicts."""
         pending_tasks = self.owner.get_pending_tasks()
-        sorted_tasks = self.sort_by_time(pending_tasks)
+        
+        # 1. Advanced Algorithm: Weighted Prioritization!
+        priority_map = {"high": 3, "medium": 2, "low": 1}
+        # Sort tasks strictly by priority descending, then chronologically inside that priority
+        priority_sorted_tasks = sorted(pending_tasks, key=lambda t: (-priority_map.get(t.priority.lower(), 1), t.target_time))
 
         self.daily_plan = []
         self.explanation = []
@@ -136,31 +140,32 @@ class Scheduler:
             h, m = t_str.split(':')
             return int(h) * 60 + int(m)
 
-        for task in sorted_tasks:
+        # 2. Select tasks explicitly honoring the priority sorting to securely lock most important slots first
+        accepted_tasks = []
+        for task in priority_sorted_tasks:
             if time_left >= task.time:
-                # Lightweight Conflict Detection
-                task_start = time_to_mins(task.target_time)
-                task_end = task_start + task.time
-                
-                conflict_found = False
-                for scheduled_task in self.daily_plan:
-                    sched_start = time_to_mins(scheduled_task.target_time)
-                    sched_end = sched_start + scheduled_task.time
-                    
-                    # Logic: if task begins before the other ends, AND ends after the other begins, they overlap.
-                    if task_start < sched_end and sched_start < task_end:
-                        conflict_found = True
-                        self.warnings.append(f"⚠️ WARNING: '{task.description}' ({task.target_time}) conflicts with '{scheduled_task.description}' ({scheduled_task.target_time})!")
-
-                self.daily_plan.append(task)
+                accepted_tasks.append(task)
                 time_left -= task.time
-                
-                if conflict_found:
-                    self.explanation.append(f"Scheduled '{task.description}' at {task.target_time} ({task.time}m) WITH CONFLICT. Time remaining: {time_left}m.")
-                else:
-                    self.explanation.append(f"Scheduled '{task.description}' at {task.target_time} ({task.time}m). Time remaining: {time_left}m.")
+                self.explanation.append(f"Accepted '{task.description}' ({task.priority.upper()} priority). Time remaining: {time_left}m.")
             else:
-                self.explanation.append(f"Skipped '{task.description}' at {task.target_time} ({task.time}m) - Not enough time remaining (has {time_left}m).")
+                self.explanation.append(f"Rejected '{task.description}' - Insufficient time ({time_left}m < {task.time}m).")
+
+        # 3. Final structural processing: safely sort ONLY the successfully accepted tasks strictly chronologically!
+        self.daily_plan = self.sort_by_time(accepted_tasks)
+
+        # 4. Conflict Detection mathematically computed safely explicitly over the final sorted chronological daily_plan subset
+        for i, task in enumerate(self.daily_plan):
+            task_start = time_to_mins(task.target_time)
+            task_end = task_start + task.time
+            for scheduled_task in self.daily_plan[i+1:]:
+                sched_start = time_to_mins(scheduled_task.target_time)
+                sched_end = sched_start + scheduled_task.time
+                
+                # Check absolute math interval overlapping exactly:
+                if task_start < sched_end and sched_start < task_end:
+                    warning_str = f"⚠️ WARNING: '{task.description}' ({task.target_time}) conflicts with '{scheduled_task.description}' ({scheduled_task.target_time})!"
+                    if warning_str not in self.warnings:
+                        self.warnings.append(warning_str)
 
     def get_plan_details(self) -> str:
         """Returns a formatted string of the generated daily plan and reasoning/warnings."""
