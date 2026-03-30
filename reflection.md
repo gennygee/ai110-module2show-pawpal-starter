@@ -2,10 +2,34 @@
 
 ## 1. System Design
 
+**Core User Actions:**
+1. Add a pet (and owner information).
+2. Schedule a care task (e.g., walk, feeding, meds) with its duration and priority.
+3. View today's tasks generated as a daily plan based on constraints.
+
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+The system revolves around four main objects to manage a user's pet care schedule:
+
+1. **Owner**
+   - **Attributes**: `name` (string), `time_available` (integer, minutes per day), `pets` (list of Pet objects)
+   - **Methods**: `add_pet(pet)`, `update_time_available(minutes)`
+   - **Responsibility**: Holds the user's constraints and ties to their pets.
+
+2. **Pet**
+   - **Attributes**: `name` (string), `species` (string), `tasks` (list of Task objects)
+   - **Methods**: `add_task(task)`, `remove_task(task)`, `get_tasks()`
+   - **Responsibility**: Represents the pet requiring care and holds the master list of all individual care tasks.
+
+3. **Task**
+   - **Attributes**: `name` (string), `type` (string: walk, feeding, meds, grooming), `duration` (integer in minutes), `priority` (integer or string: high/med/low)
+   - **Methods**: `update_duration(minutes)`, `update_priority(level)`
+   - **Responsibility**: Represents a specific care action the pet needs.
+
+4. **Scheduler**
+   - **Attributes**: `owner` (Owner object), `pet` (Pet object), `daily_plan` (list of Task objects), `explanation` (string)
+   - **Methods**: `generate_plan()`, `get_plan_details()`
+   - **Responsibility**: Takes the owner's constraints (available time) and the pet's tasks (priorities, durations) to construct an actionable daily schedule.
 
 **b. Design changes**
 
