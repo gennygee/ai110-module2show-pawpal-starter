@@ -87,7 +87,13 @@ else:
     if all_tasks:
         st.write("---")
         st.write("**All Current Tasks Database:**")
-        task_data = [{"Pet": p.name, "Time": t.target_time, "Task": t.description, "Duration": f"{t.time}m", "Priority": t.priority, "Completed": "✅" if t.completion_status else "❌"} 
+        
+        def priority_emoji(p_level: str) -> str:
+            if p_level == "high": return "🔴 High"
+            if p_level == "medium": return "🟡 Medium"
+            return "🟢 Low"
+            
+        task_data = [{"Pet": p.name, "Time": t.target_time, "Task": t.description, "Duration": f"{t.time}m", "Priority": priority_emoji(t.priority), "Completed": "✅" if t.completion_status else "❌"} 
                      for p in st.session_state.owner.pets for t in p.tasks]
         st.dataframe(task_data, use_container_width=True)
 
@@ -113,7 +119,12 @@ if st.button("Generate Optimal Schedule!", type="primary"):
                 st.warning(w)
                 
         if scheduler.daily_plan:
-            plan_data = [{"Time": t.target_time, "Task": t.description, "Duration": f"{t.time}m", "Priority": t.priority} for t in scheduler.daily_plan]
+            def priority_emoji(p_level: str) -> str:
+                if p_level.lower() == "high": return "🔴 High"
+                if p_level.lower() == "medium": return "🟡 Medium"
+                return "🟢 Low"
+                
+            plan_data = [{"Time": t.target_time, "Task": t.description, "Duration": f"{t.time}m", "Priority": priority_emoji(t.priority)} for t in scheduler.daily_plan]
             st.table(plan_data)
             st.success("Schedule generated securely!")
         else:
