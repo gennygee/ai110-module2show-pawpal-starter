@@ -233,17 +233,49 @@ class Scheduler:
         """Returns a formatted string of the generated daily plan and reasoning/warnings."""
         if not self.daily_plan and not self.explanation:
             return "No plan generated yet."
-        
-        details = "Daily Plan:\n"
-        for task in self.daily_plan:
-            details += f"- [ ] {task.target_time} | {task.description} ({task.time} mins)\n"
+            
+        try:
+            from tabulate import tabulate
+            
+            def get_task_emoji(desc: str) -> str:
+                d = desc.lower()
+                if 'walk' in d or 'play' in d or 'park' in d: return '🐕'
+                if 'feed' in d or 'food' in d or 'dinner' in d or 'breakfast' in d: return '🍖'
+                if 'groom' in d or 'brush' in d or 'bath' in d: return '🛁'
+                if 'med' in d or 'vet' in d or 'pill' in d: return '💊'
+                if 'sleep' in d or 'nap' in d: return '💤'
+                return '🐾'
+                
+            def p_emoji(p_level: str) -> str:
+                p = p_level.lower()
+                if p == "high": return "🔴 High"
+                if p == "medium": return "🟡 Med"
+                return "🟢 Low"
+
+            table_data = []
+            for task in self.daily_plan:
+                table_data.append([
+                    task.target_time,
+                    f"{get_task_emoji(task.description)} {task.description}",
+                    f"{task.time} min",
+                    p_emoji(task.priority)
+                ])
+                
+            details = "\n✨ TODAY'S DAILY PLAN ✨\n"
+            details += tabulate(table_data, headers=["Time", "Task", "Duration", "Priority"], tablefmt="fancy_grid")
+            details += "\n"
+            
+        except ImportError:
+            details = "Daily Plan:\n"
+            for task in self.daily_plan:
+                details += f"- [ ] {task.target_time} | {task.description} ({task.time} mins)\n"
             
         if self.warnings:
-            details += "\nSchedule Warnings:\n"
+            details += "\n⚠️ SCHEDULE WARNINGS:\n"
             for w in self.warnings:
                 details += f"{w}\n"
             
-        details += "\nScheduler Reasoning:\n"
+        details += "\n🤖 SCHEDULER REASONING:\n"
         for exp in self.explanation:
             details += f"- {exp}\n"
             
